@@ -36,6 +36,7 @@ export default function Game() {
   const [showBlink, setShowBlink] = useState(true);
   const [value, setValue] = useState("");
   const [isValid, setIsValid] = useState(false);
+  const [isMouseMoving, setIsMouseMoving] = useState(false);
 
   const showBlinkByTime = () => {
     setShowBlink(true);
@@ -44,7 +45,25 @@ export default function Game() {
 
   useEffect(() => {
     showBlinkByTime();
+
+    const handleMouseMove = () => {
+      setIsMouseMoving(true);
+    };
+
+    if (typeof window !== "undefined") {
+      document.addEventListener("mousemove", handleMouseMove);
+
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+      };
+    }
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsMouseMoving(false);
+    }, 5000);
+  }, [isMouseMoving]);
 
   const checkWord = (event) => {
     const newValue = event.target.value.toUpperCase();
@@ -58,8 +77,10 @@ export default function Game() {
       {showBlink && <StyledBlink>CAT</StyledBlink>}
       <Content color={isValid ? "dark" : "light"}>
         {!isValid && <div>type what you saw</div>}
-        <StyledInput type="text" value={value} onChange={checkWord} />
+        <StyledInput type="text" value={value} onChange={checkWord} autoFocus />
         {/* <button onClick={showBlinkByTime}>Pokaż diva</button> */}
+        {isMouseMoving && <h1>mouse movment</h1>}
+        <h2>stx {`${isMouseMoving}`}</h2>
       </Content>
     </>
   );
