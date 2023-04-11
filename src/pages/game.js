@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+
 import styled from "styled-components";
 import Content from "@/components/content";
 import Progress from "@/components/progress";
@@ -55,6 +57,12 @@ const StyledToolTip = styled.div`
   font-size: 24px;
   line-height: 36px;
   text-align: center;
+  @media (max-height: 800px) {
+    left: 10%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: min-content;
+  }
 `;
 
 const StyledSquare = styled.div`
@@ -93,23 +101,42 @@ const StyledTriangle = styled.div`
   border-bottom: 20px solid transparent;
   border-left: 32px solid
     ${(props) => (props.color === "light" ? blackColor : yellowColor)};
+  cursor: pointer;
 `;
 
 export default function Game() {
+  const router = useRouter();
+
   const [words, setWords] = useState("");
   const [userLvl, setUserLvl] = useState(0);
   const [word, setWord] = useState("");
+  const [translate, setTranslate] = useState(false);
 
   const [showBlink, setShowBlink] = useState(true);
-  const [blinkUse, setBlinkUse] = useState(2);
+  const [blinkUse, setBlinkUse] = useState(5);
   const [value, setValue] = useState("");
   const [isValid, setIsValid] = useState(false);
   const [isMouseMoving, setIsMouseMoving] = useState(false);
 
-  const showBlinkByTime = () => {
-    setShowBlink(true);
-    blinkUse >= 0 && setBlinkUse(blinkUse - 1);
-    setTimeout(() => setShowBlink(false), 1000);
+  const showBlinkByTime = (byRender) => {
+    const fun = () => {
+      setShowBlink(true);
+      setTimeout(() => setShowBlink(false), 1000);
+    };
+
+    fun();
+  };
+
+  const flash = () => {
+    setIsMouseMoving(false);
+    showBlinkByTime();
+  };
+
+  const nextLevel = () => {
+    setIsValid(false);
+    setIsMouseMoving(false);
+    setValue("");
+    setUserLvl(userLvl + 1);
   };
 
   useEffect(() => {
@@ -118,7 +145,6 @@ export default function Game() {
         const response = await fetch("/api/getWords");
         const data = await response.json();
         setWords(data.words);
-        console.log(data.words);
       } catch (error) {
         console.error(error);
       }
@@ -131,6 +157,23 @@ export default function Game() {
 
     if (typeof window !== "undefined") {
       document.addEventListener("mousemove", handleMouseMove);
+
+      document.addEventListener("keydown", function (event) {
+        if (event.code === "ArrowUp") {
+          setIsMouseMoving(true);
+        } else if (event.code === "Enter") {
+          flash();
+        } else if (event.code === "ArrowDown") {
+          nextLevel();
+        } else if (event.code === "Escape") {
+          router.push("/");
+        } else if (
+          event.code === "ControlLeft" ||
+          event.code === "ControlRight"
+        ) {
+          setTranslate(!translate);
+        }
+      });
 
       return () => {
         document.removeEventListener("mousemove", handleMouseMove);
@@ -145,8 +188,17 @@ export default function Game() {
   }, [isMouseMoving]);
 
   useEffect(() => {
+    setWord(words[userLvl]?.translation);
+    flash();
+    setTimeout(() => {
+      setWord(words[userLvl]?.word);
+      setIsMouseMoving(false);
+    }, 1000);
+  }, [translate]);
+
+  useEffect(() => {
     setWord(words[userLvl]?.word);
-    showBlinkByTime();
+    showBlinkByTime(true);
   }, [userLvl, words]);
 
   const checkWord = (event) => {
@@ -154,13 +206,6 @@ export default function Game() {
     const isValidValue = newValue === word;
     setValue(newValue);
     setIsValid(isValidValue);
-  };
-
-  const nextLevel = () => {
-    setIsValid(false);
-    setIsMouseMoving(false);
-    setValue("");
-    setUserLvl(userLvl + 1);
   };
 
   return (
@@ -188,12 +233,7 @@ export default function Game() {
         />
         <StyledMenu>
           <StyledSquare color={isValid ? "dark" : "light"}>0</StyledSquare>
-          <StyledRound
-            onClick={() => {
-              blinkUse > 0 && showBlinkByTime();
-            }}
-            color={isValid ? "dark" : "light"}
-          >
+          <StyledRound onClick={flash} color={isValid ? "dark" : "light"}>
             {blinkUse}
           </StyledRound>
           <StyledTriangle
@@ -208,7 +248,7 @@ export default function Game() {
             <p> Arrow down: Skip</p>
             <br />
             <p> Escape: Quit </p>
-            <p>Ctrl/cmd T:Translate</p>
+            <p>Ctrl: Translate</p>
           </StyledToolTip>
         )}
       </Content>

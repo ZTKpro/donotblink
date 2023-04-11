@@ -28,8 +28,8 @@ const StyledMore = styled.h5`
 `;
 
 const StyledImage = styled(Image)`
-  height: 418px;
-  width: 418px;
+  height: auto;
+  width: 14vw;
   @media (max-width: 1268px) {
     height: auto;
     width: 80%;
