@@ -27,6 +27,15 @@ const StyledMore = styled.h5`
   }
 `;
 
+const StyledImage = styled(Image)`
+  height: 418px;
+  width: 418px;
+  @media (max-width: 1268px) {
+    height: auto;
+    width: 80%;
+  }
+`;
+
 export default function Home() {
   const router = useRouter();
 
@@ -56,7 +65,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Content>
-        <Image src={Logo} alt="Logo" width={418} height={418} />
+        <StyledImage src={Logo} alt="Logo" />
         <StyledTitle>press Enter to start</StyledTitle>
         <StyledMore>More</StyledMore>
       </Content>
