@@ -1,9 +1,12 @@
 import styled from "styled-components";
 
 const yellowColor = "#F2C94C";
+const blackColor = "#000";
 
 const StyledWrapper = styled.div`
-  background-color: ${(props) => props.bg || "#000"};
+  background-color: ${(props) =>
+    props.color === "light" ? yellowColor : blackColor};
+  color: ${(props) => (props.color === "light" ? blackColor : yellowColor)};
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -14,7 +17,7 @@ const StyledWrapper = styled.div`
 
 export default function Content(props) {
   return (
-    <StyledWrapper bg={props.bg} flexDirection={props.flexDirection}>
+    <StyledWrapper color={props.color} flexDirection={props.flexDirection}>
       {props.children}
     </StyledWrapper>
   );

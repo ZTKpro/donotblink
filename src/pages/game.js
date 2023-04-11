@@ -21,8 +21,21 @@ const StyledBlink = styled.div`
   }
 `;
 
+const StyledInput = styled.input`
+  margin: 40px auto;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: 0;
+  font-size: 96px;
+  width: 100%;
+  text-align: center;
+  caret-color: #000;
+`;
+
 export default function Game() {
   const [showBlink, setShowBlink] = useState(true);
+  const [value, setValue] = useState("");
+  const [isValid, setIsValid] = useState(false);
 
   const showBlinkByTime = () => {
     setShowBlink(true);
@@ -33,12 +46,20 @@ export default function Game() {
     showBlinkByTime();
   }, []);
 
+  const checkWord = (event) => {
+    const newValue = event.target.value.toUpperCase();
+    const isValidValue = newValue === "CAT";
+    setValue(newValue);
+    setIsValid(isValidValue);
+  };
+
   return (
     <>
       {showBlink && <StyledBlink>CAT</StyledBlink>}
-      <Content bg="#F2C94C">
-        <div>type what you saw</div>
-        <button onClick={showBlinkByTime}>Pokaż diva</button>
+      <Content color={isValid ? "dark" : "light"}>
+        {!isValid && <div>type what you saw</div>}
+        <StyledInput type="text" value={value} onChange={checkWord} />
+        {/* <button onClick={showBlinkByTime}>Pokaż diva</button> */}
       </Content>
     </>
   );
