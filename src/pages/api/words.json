@@ -1,0 +1,20 @@
+[
+  { "word": "CAT", "translation": "KOT", "length": 3, "level": 1 },
+  { "word": "SKY", "translation": "NIEBO", "length": 3, "level": 2 },
+  { "word": "BOX", "translation": "PUDEŁKO", "length": 3, "level": 3 },
+  { "word": "BIRD", "translation": "PTAK", "length": 4, "level": 1 },
+  { "word": "HOME", "translation": "DOM", "length": 4, "level": 2 },
+  { "word": "FIRE", "translation": "OGIEŃ", "length": 4, "level": 3 },
+  { "word": "TREE", "translation": "DRZEWO", "length": 4, "level": 4 },
+  { "word": "MUSIC", "translation": "MUZYKA", "length": 5, "level": 1 },
+  { "word": "WATER", "translation": "WODA", "length": 5, "level": 2 },
+  { "word": "EARTH", "translation": "ZIEMIA", "length": 5, "level": 3 },
+  { "word": "SUGAR", "translation": "CUKIER", "length": 5, "level": 4 },
+  { "word": "DREAM", "translation": "SEN", "length": 5, "level": 5 },
+  { "word": "ORANGE", "translation": "POMARAŃCZA", "length": 6, "level": 1 },
+  { "word": "NATURE", "translation": "NATURA", "length": 6, "level": 2 },
+  { "word": "BEAUTY", "translation": "PIĘKNO", "length": 6, "level": 3 },
+  { "word": "SUMMER", "translation": "LATO", "length": 6, "level": 4 },
+  { "word": "COFFEE", "translation": "KAWA", "length": 6, "level": 5 },
+  { "word": "BANANA", "translation": "BANAN", "length": 6, "level": 6 }
+]
