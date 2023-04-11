@@ -73,6 +73,7 @@ const StyledSquare = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   background-color: ${(props) =>
     props.color === "light" ? blackColor : yellowColor};
   color: ${(props) => (props.color === "light" ? yellowColor : blackColor)};
@@ -114,6 +115,7 @@ export default function Game() {
 
   const [showBlink, setShowBlink] = useState(true);
   const [blinkUse, setBlinkUse] = useState(5);
+  const [skipUse, setSkipUse] = useState(5);
   const [value, setValue] = useState("");
   const [isValid, setIsValid] = useState(false);
   const [isMouseMoving, setIsMouseMoving] = useState(false);
@@ -125,6 +127,7 @@ export default function Game() {
     };
 
     fun();
+    setBlinkUse(blinkUse - 1);
   };
 
   const flash = () => {
@@ -165,6 +168,7 @@ export default function Game() {
           flash();
         } else if (event.code === "ArrowDown") {
           nextLevel();
+          setSkipUse(skipUse - 1);
         } else if (event.code === "Escape") {
           router.push("/");
         } else if (
@@ -232,7 +236,9 @@ export default function Game() {
           onBlur={({ target }) => target.focus()}
         />
         <StyledMenu>
-          <StyledSquare color={isValid ? "dark" : "light"}>0</StyledSquare>
+          <StyledSquare onClick={nextLevel} color={isValid ? "dark" : "light"}>
+            {skipUse}
+          </StyledSquare>
           <StyledRound onClick={flash} color={isValid ? "dark" : "light"}>
             {blinkUse}
           </StyledRound>
