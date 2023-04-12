@@ -11,6 +11,7 @@ const StyledTitle = styled.h3`
   margin-top: 20px;
   font-size: 20px;
   color: #f2c94c;
+  cursor: pointer;
 `;
 
 const StyledMore = styled.h5`
@@ -66,7 +67,9 @@ export default function Home() {
       </Head>
       <Content>
         <StyledImage src={Logo} alt="Logo" />
-        <StyledTitle>press Enter to start</StyledTitle>
+        <StyledTitle onClick={() => router.push("/game")}>
+          press Enter to start
+        </StyledTitle>
         <StyledMore>More</StyledMore>
       </Content>
     </>

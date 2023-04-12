@@ -111,28 +111,30 @@ export default function Game() {
   const [words, setWords] = useState("");
   const [userLvl, setUserLvl] = useState(0);
   const [word, setWord] = useState("");
+  const [wordPl, setWordPl] = useState("");
   const [translate, setTranslate] = useState(false);
 
+  const [isMouseMoving, setIsMouseMoving] = useState(false);
   const [showBlink, setShowBlink] = useState(true);
   const [blinkUse, setBlinkUse] = useState(5);
   const [skipUse, setSkipUse] = useState(5);
+
   const [value, setValue] = useState("");
   const [isValid, setIsValid] = useState(false);
-  const [isMouseMoving, setIsMouseMoving] = useState(false);
 
-  const showBlinkByTime = (byRender) => {
+  const showBlinkByTime = (byBtn) => {
+    setIsMouseMoving(false);
     const fun = () => {
       setShowBlink(true);
       setTimeout(() => setShowBlink(false), 1000);
     };
 
-    fun();
-    setBlinkUse(blinkUse - 1);
-  };
+    if (byBtn) {
+      fun();
+      setBlinkUse(blinkUse - 1);
+    }
 
-  const flash = () => {
-    setIsMouseMoving(false);
-    showBlinkByTime();
+    fun();
   };
 
   const nextLevel = () => {
@@ -165,7 +167,8 @@ export default function Game() {
         if (event.code === "ArrowUp") {
           setIsMouseMoving(true);
         } else if (event.code === "Enter") {
-          flash();
+          setWord(words[userLvl]?.word);
+          showBlinkByTime(true);
         } else if (event.code === "ArrowDown") {
           nextLevel();
           setSkipUse(skipUse - 1);
@@ -175,7 +178,11 @@ export default function Game() {
           event.code === "ControlLeft" ||
           event.code === "ControlRight"
         ) {
-          setTranslate(!translate);
+          setTranslate(true);
+          showBlinkByTime();
+          setTimeout(() => {
+            setTranslate(false);
+          }, 1000);
         }
       });
 
@@ -192,16 +199,8 @@ export default function Game() {
   }, [isMouseMoving]);
 
   useEffect(() => {
-    setWord(words[userLvl]?.translation);
-    flash();
-    setTimeout(() => {
-      setWord(words[userLvl]?.word);
-      setIsMouseMoving(false);
-    }, 1000);
-  }, [translate]);
-
-  useEffect(() => {
     setWord(words[userLvl]?.word);
+    setWordPl(words[userLvl]?.translation);
     showBlinkByTime(true);
   }, [userLvl, words]);
 
@@ -212,22 +211,31 @@ export default function Game() {
     setIsValid(isValidValue);
   };
 
+  const header = () => {
+    if (showBlink) {
+      return;
+    }
+
+    if (isValid) {
+      return (
+        <Progress level={words[userLvl].level} many={words[userLvl]?.length} />
+      );
+    }
+
+    return (
+      <StyledTitle>
+        {isMouseMoving
+          ? `${value.length}/${words[userLvl]?.length}`
+          : "type what you saw"}
+      </StyledTitle>
+    );
+  };
+
   return (
     <>
-      {showBlink && <StyledBlink>{word}</StyledBlink>}
+      {showBlink && <StyledBlink>{translate ? wordPl : word}</StyledBlink>}
       <Content color={isValid ? "dark" : "light"}>
-        {isValid ? (
-          <Progress
-            level={words[userLvl].level}
-            many={words[userLvl]?.length}
-          />
-        ) : (
-          <StyledTitle>
-            {isMouseMoving
-              ? `${value.length}/${words[userLvl]?.length}`
-              : "type what you saw"}
-          </StyledTitle>
-        )}
+        {header()}
         <StyledInput
           type="text"
           value={value}
@@ -239,7 +247,10 @@ export default function Game() {
           <StyledSquare onClick={nextLevel} color={isValid ? "dark" : "light"}>
             {skipUse}
           </StyledSquare>
-          <StyledRound onClick={flash} color={isValid ? "dark" : "light"}>
+          <StyledRound
+            onClick={showBlinkByTime}
+            color={isValid ? "dark" : "light"}
+          >
             {blinkUse}
           </StyledRound>
           <StyledTriangle
