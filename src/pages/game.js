@@ -108,40 +108,58 @@ const StyledTriangle = styled.div`
 export default function Game() {
   const router = useRouter();
 
+  const fromLocalStorage = (name) => {
+    if (typeof window !== "undefined") {
+      const storedValue = localStorage.getItem(name);
+      return storedValue !== null ? parseInt(storedValue) : 3;
+    }
+
+    return 3;
+  };
+
   const [words, setWords] = useState("");
-  const [userLvl, setUserLvl] = useState(0);
+  const [userLvl, setUserLvl] = useState(fromLocalStorage("userLvl"));
   const [word, setWord] = useState("");
   const [wordPl, setWordPl] = useState("");
   const [translate, setTranslate] = useState(false);
 
   const [isMouseMoving, setIsMouseMoving] = useState(false);
   const [showBlink, setShowBlink] = useState(true);
-  const [blinkUse, setBlinkUse] = useState(5);
-  const [skipUse, setSkipUse] = useState(5);
+  const [blinkUse, setBlinkUse] = useState(fromLocalStorage("blinkUse"));
+  const [skipUse, setSkipUse] = useState(fromLocalStorage("skipUse"));
 
   const [value, setValue] = useState("");
   const [isValid, setIsValid] = useState(false);
 
-  const showBlinkByTime = (byBtn) => {
+  const showBlinkFun = () => {
     setIsMouseMoving(false);
-    const fun = () => {
-      setShowBlink(true);
-      setTimeout(() => setShowBlink(false), 1000);
-    };
+    setShowBlink(true);
+    setTimeout(() => setShowBlink(false), 1000);
+  };
 
-    if (byBtn) {
-      fun();
+  const showBlinkUser = () => {
+    if (blinkUse > 0) {
+      showBlinkFun();
       setBlinkUse(blinkUse - 1);
     }
-
-    fun();
   };
 
   const nextLevel = () => {
-    setIsValid(false);
-    setIsMouseMoving(false);
-    setValue("");
-    setUserLvl(userLvl + 1);
+    const fun = () => {
+      setIsValid(false);
+      setIsMouseMoving(false);
+      setValue("");
+      setUserLvl(userLvl + 1);
+    };
+
+    if (isValid) {
+      fun();
+    }
+
+    if (skipUse > 0) {
+      fun();
+      setSkipUse(skipUse - 1);
+    }
   };
 
   useEffect(() => {
@@ -160,34 +178,35 @@ export default function Game() {
       setIsMouseMoving(true);
     };
 
+    const handleKeyDown = (event) => {
+      if (event.code === "ArrowUp") {
+        setIsMouseMoving(true);
+      } else if (event.code === "Enter") {
+        showBlinkUser();
+      } else if (event.code === "ArrowDown") {
+        nextLevel();
+        setSkipUse(skipUse - 1);
+      } else if (event.code === "Escape") {
+        router.push("/");
+      } else if (
+        event.code === "ControlLeft" ||
+        event.code === "ControlRight"
+      ) {
+        setTranslate(true);
+        showBlinkFun();
+        setTimeout(() => {
+          setTranslate(false);
+        }, 1000);
+      }
+    };
+
     if (typeof window !== "undefined") {
       document.addEventListener("mousemove", handleMouseMove);
-
-      document.addEventListener("keydown", function (event) {
-        if (event.code === "ArrowUp") {
-          setIsMouseMoving(true);
-        } else if (event.code === "Enter") {
-          setWord(words[userLvl]?.word);
-          showBlinkByTime(true);
-        } else if (event.code === "ArrowDown") {
-          nextLevel();
-          setSkipUse(skipUse - 1);
-        } else if (event.code === "Escape") {
-          router.push("/");
-        } else if (
-          event.code === "ControlLeft" ||
-          event.code === "ControlRight"
-        ) {
-          setTranslate(true);
-          showBlinkByTime();
-          setTimeout(() => {
-            setTranslate(false);
-          }, 1000);
-        }
-      });
+      document.addEventListener("keydown", handleKeyDown);
 
       return () => {
         document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("keydown", handleKeyDown);
       };
     }
   }, []);
@@ -201,8 +220,20 @@ export default function Game() {
   useEffect(() => {
     setWord(words[userLvl]?.word);
     setWordPl(words[userLvl]?.translation);
-    showBlinkByTime(true);
+    showBlinkFun();
   }, [userLvl, words]);
+
+  useEffect(() => {
+    localStorage.setItem("blinkUse", blinkUse);
+  }, [blinkUse]);
+
+  useEffect(() => {
+    localStorage.setItem("userLvl", userLvl);
+  }, [userLvl]);
+
+  useEffect(() => {
+    localStorage.setItem("skipUse", skipUse);
+  }, [skipUse]);
 
   const checkWord = (event) => {
     const newValue = event.target.value.toUpperCase();
@@ -231,10 +262,12 @@ export default function Game() {
     );
   };
 
+  const theme = isValid ? "dark" : "light";
+
   return (
     <>
       {showBlink && <StyledBlink>{translate ? wordPl : word}</StyledBlink>}
-      <Content color={isValid ? "dark" : "light"}>
+      <Content color={theme}>
         {header()}
         <StyledInput
           type="text"
@@ -244,19 +277,13 @@ export default function Game() {
           onBlur={({ target }) => target.focus()}
         />
         <StyledMenu>
-          <StyledSquare onClick={nextLevel} color={isValid ? "dark" : "light"}>
+          <StyledSquare onClick={nextLevel} color={theme}>
             {skipUse}
           </StyledSquare>
-          <StyledRound
-            onClick={showBlinkByTime}
-            color={isValid ? "dark" : "light"}
-          >
+          <StyledRound onClick={showBlinkUser} color={theme}>
             {blinkUse}
           </StyledRound>
-          <StyledTriangle
-            color={isValid ? "dark" : "light"}
-            onClick={nextLevel}
-          />
+          <StyledTriangle color={theme} onClick={nextLevel} />
         </StyledMenu>
         {isMouseMoving && (
           <StyledToolTip>
