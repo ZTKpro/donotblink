@@ -108,25 +108,16 @@ const StyledTriangle = styled.div`
 export default function Game() {
   const router = useRouter();
 
-  const fromLocalStorage = (name) => {
-    if (typeof window !== "undefined") {
-      const storedValue = localStorage.getItem(name);
-      return storedValue !== null ? parseInt(storedValue) : 3;
-    }
-
-    return 3;
-  };
-
   const [words, setWords] = useState("");
-  const [userLvl, setUserLvl] = useState(fromLocalStorage("userLvl"));
+  const [userLvl, setUserLvl] = useState(0);
   const [word, setWord] = useState("");
   const [wordPl, setWordPl] = useState("");
   const [translate, setTranslate] = useState(false);
 
   const [isMouseMoving, setIsMouseMoving] = useState(false);
   const [showBlink, setShowBlink] = useState(true);
-  const [blinkUse, setBlinkUse] = useState(fromLocalStorage("blinkUse"));
-  const [skipUse, setSkipUse] = useState(fromLocalStorage("skipUse"));
+  const [blinkUse, setBlinkUse] = useState(3);
+  const [skipUse, setSkipUse] = useState(3);
 
   const [value, setValue] = useState("");
   const [isValid, setIsValid] = useState(false);
@@ -222,18 +213,6 @@ export default function Game() {
     setWordPl(words[userLvl]?.translation);
     showBlinkFun();
   }, [userLvl, words]);
-
-  useEffect(() => {
-    localStorage.setItem("blinkUse", blinkUse);
-  }, [blinkUse]);
-
-  useEffect(() => {
-    localStorage.setItem("userLvl", userLvl);
-  }, [userLvl]);
-
-  useEffect(() => {
-    localStorage.setItem("skipUse", skipUse);
-  }, [skipUse]);
 
   const checkWord = (event) => {
     const newValue = event.target.value.toUpperCase();
