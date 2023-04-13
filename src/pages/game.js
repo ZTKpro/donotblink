@@ -130,8 +130,8 @@ export default function Game() {
 
   const showBlinkUser = () => {
     if (blinkUse > 0) {
-      showBlinkFun();
       setBlinkUse(blinkUse - 1);
+      showBlinkFun();
     }
   };
 
@@ -176,7 +176,6 @@ export default function Game() {
         showBlinkUser();
       } else if (event.code === "ArrowDown") {
         nextLevel();
-        setSkipUse(skipUse - 1);
       } else if (event.code === "Escape") {
         router.push("/");
       } else if (
