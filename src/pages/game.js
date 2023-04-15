@@ -27,6 +27,32 @@ const StyledBlink = styled.div`
   }
 `;
 
+const StyledQuit = styled.p`
+  display: none;
+  @media (min-height: 1000px) {
+    display: block;
+    position: absolute;
+    left: 60px;
+    top: 30px;
+    font-size: 100px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+`;
+
+const StyledTranslate = styled.p`
+  display: none;
+  @media (min-height: 1000px) {
+    display: block;
+    position: absolute;
+    left: 200px;
+    top: 30px;
+    font-size: 100px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+`;
+
 const StyledTitle = styled.p`
   font-size: 24px;
 `;
@@ -145,12 +171,18 @@ export default function Game() {
 
     if (isValid) {
       fun();
-    }
-
-    if (skipUse > 0) {
+    } else if (skipUse > 0) {
       fun();
       setSkipUse(skipUse - 1);
     }
+  };
+
+  const translateFun = () => {
+    setTranslate(true);
+    showBlinkFun();
+    setTimeout(() => {
+      setTranslate(false);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -182,11 +214,7 @@ export default function Game() {
         event.code === "ControlLeft" ||
         event.code === "ControlRight"
       ) {
-        setTranslate(true);
-        showBlinkFun();
-        setTimeout(() => {
-          setTranslate(false);
-        }, 1000);
+        translateFun();
       }
     };
 
@@ -246,6 +274,8 @@ export default function Game() {
     <>
       {showBlink && <StyledBlink>{translate ? wordPl : word}</StyledBlink>}
       <Content color={theme}>
+        <StyledQuit onClick={() => router.push("/")}>X</StyledQuit>
+        <StyledTranslate onClick={translateFun}>T</StyledTranslate>
         {header()}
         <StyledInput
           type="text"
