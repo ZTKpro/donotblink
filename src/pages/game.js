@@ -29,12 +29,12 @@ const StyledBlink = styled.div`
 
 const StyledQuit = styled.p`
   display: none;
-  @media (min-height: 1000px) {
+  @media (min-width: 1000px) {
     display: block;
     position: absolute;
-    left: 60px;
-    top: 30px;
-    font-size: 100px;
+    left: 50px;
+    top: 20px;
+    font-size: 60px;
     font-weight: 800;
     cursor: pointer;
   }
@@ -42,12 +42,12 @@ const StyledQuit = styled.p`
 
 const StyledTranslate = styled.p`
   display: none;
-  @media (min-height: 1000px) {
+  @media (min-width: 1000px) {
     display: block;
     position: absolute;
-    left: 200px;
-    top: 30px;
-    font-size: 100px;
+    left: 150px;
+    top: 20px;
+    font-size: 60px;
     font-weight: 800;
     cursor: pointer;
   }
@@ -77,9 +77,9 @@ const StyledMenu = styled.div`
 
 const StyledToolTip = styled.div`
   position: absolute;
-  bottom: 20px;
+  bottom: 5%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
   font-size: 24px;
   line-height: 36px;
   text-align: center;
