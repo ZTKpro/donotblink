@@ -296,11 +296,6 @@ export default function Game() {
             {blinkUse}
           </StyledRound>
           <StyledTriangle color={theme} onClick={nextLevel} />
-            <StyledLinkW 
-              href="https://dswebsite.webflow.io/" 
-            >
-              dswebsite.webflow.io
-            </StyledLinkW> 
         </StyledMenu>
         {isMouseMoving && (
           <StyledToolTip>
