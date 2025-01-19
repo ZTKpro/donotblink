@@ -131,6 +131,10 @@ const StyledTriangle = styled.div`
   cursor: pointer;
 `;
 
+const StyledLinkW = styled.a`
+opacity: 0.1;
+`
+
 export default function Game() {
   const router = useRouter();
 
@@ -292,6 +296,11 @@ export default function Game() {
             {blinkUse}
           </StyledRound>
           <StyledTriangle color={theme} onClick={nextLevel} />
+            <StyledLink 
+              href="https://dswebsite.webflow.io/" 
+            >
+              dswebsite.webflow.io
+            </StyledLink> 
         </StyledMenu>
         {isMouseMoving && (
           <StyledToolTip>
